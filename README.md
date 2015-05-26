@@ -6,40 +6,36 @@
 
 Oryginalny, najstarszy OpenGL fixed-function miał takie podejście do renderowania:
 
-glLoadMatrix, glMultMatrix (and shortcuts like glLoadIdentity, glTranslate, glScale...)
+  glLoadMatrix, glMultMatrix (and shortcuts like glLoadIdentity, glTranslate, glScale...)
 
-  glBegin(...)
+    glBegin(...)
 
-    gl(... some vertex attrib, like glTexCoord, glMultiTexCoord, glMaterial...)
-    glVertex(...);
+      gl(... some vertex attrib, like glTexCoord, glMultiTexCoord, glMaterial...)
+      glVertex(...);
 
-    gl(... some vertex attrib, like glTexCoord, glMultiTexCoord, glMaterial...)
-    glVertex(...);
+      gl(... some vertex attrib, like glTexCoord, glMultiTexCoord, glMaterial...)
+      glVertex(...);
 
-    gl(... some vertex attrib, like glTexCoord, glMultiTexCoord, glMaterial...)
-    glVertex(...);
+      gl(... some vertex attrib, like glTexCoord, glMultiTexCoord, glMaterial...)
+      glVertex(...);
 
-    ....
+      ....
 
-  glEnd();
+    glEnd();
 
-To API już nie istnieje w nowszych OpenGLach (jest deprecated w GL 3.0, wyrzucone w 3.1,
-a nawet na starszych GLach --- mocno niezalecane jako bardzo nieefektywanie),
-jest zastąpione vertex arrays ładowanymi przez VBO.
-Ale koncepcja pozostała: renderowanie to podawanie zbioru vertexów, każdy vertex
-ma jakieś atrybuty.
+To API już nie istnieje w nowszych OpenGLach (jest deprecated w GL 3.0, wyrzucone w 3.1, a nawet na starszych GLach --- mocno niezalecane jako bardzo nieefektywne), jest zastąpione vertex arrays ładowanymi przez VBO. Ale podstawowa koncepcja pozostała: renderowanie to podawanie zbioru vertexów, każdy vertex ma jakieś atrybuty.
 
 ### Multi-texturing
 
 Co można robić ciekawego per-vertex?
 
-glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, constColor);
-glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_ARB);
-glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_ALPHA_ARB, GL_MODULATE);
-glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA_ARB, GL_TEXTURE);
-glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA_ARB, GL_SRC_ALPHA);
-glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA_ARB, GL_CONSTANT_ARB);
-glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA_ARB, GL_SRC_ALPHA);
+  glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, constColor);
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_ARB);
+  glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_ALPHA_ARB, GL_MODULATE);
+  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA_ARB, GL_TEXTURE);
+  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA_ARB, GL_SRC_ALPHA);
+  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA_ARB, GL_CONSTANT_ARB);
+  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA_ARB, GL_SRC_ALPHA);
 
 Co to znaczy? Że wynikowa alpha to "texure.alpha * constColor.alpha". Ewidentnie, chcemy wykonywać dowolne operacje arytmetyczne na kolorach, a to API jest ograniczeniem.
 
@@ -49,16 +45,16 @@ Stąd pomysły: hej, może udostępnijmy język do takich obliczeń?
 
 1. Jest funkcja per-vertex. Typowe zastosowania to zrobić to co klasyczny OpenGL robił dla glVertex:
 
-  transform it by projection * modelview matrices,
-  calculate per-vertex values like color from lighting
+    transform it by projection * modelview matrices,
+    calculate per-vertex values like color from lighting
 
-    color =
-      material emission +
-      scene ambient * mat ambient +
-      for each light: (
-        light ambient * mat ambient +
-        light diffuse * mat diffuse * diffuse factor +
-        light specular .... etc.).
+      color =
+        material emission +
+        scene ambient * mat ambient +
+        for each light: (
+          light ambient * mat ambient +
+          light diffuse * mat diffuse * diffuse factor +
+          light specular .... etc.).
 
 2. OpenGL
 
