@@ -105,16 +105,24 @@ Generalnie, see Cg docs, przede wszystkim:
 
 # Część praktyczna
 
-## Demo: proste nałożenie 2 textur, toon shading.
+## Demo: proste nałożenie textury (Tex.shader), diffuse (SimpleDiffuse.shader).
+
+Zadanie:
+1. Zmień przykład diffuse w toon shading. Wygląda dziwnie, dlaczego?
+2. Zmień żeby obliczać oświetlenie per-fragment (cieniowanie Phonga, nie Gourauda), wtedy toon zadziała ładnie.
+3. Tex.shader zmień żeby mieszał 2 textury, wybierz jaśniejszą.
 
 ## Surface shadery.
+
+Idea: piszemy funkcję "surf" która jest wkładana do środka shadera który zajmuje się obliczaniem oświetlenia. My zajmujemy się podaniem bazowego koloru (mieszamy textury, kolory...), Unity robi resztę. Dobre wtedy (i tylko wtedy) kiedy chcemy skorzystać ze standardowego oświetlenia Unity.
+
+http://docs.unity3d.com/460/Documentation/Manual/SL-SurfaceShaderExamples.html
 
 ## Textury advanced
 
 * Nearest vs bilinear,
 * anisotropic,
-* compresja S3tc i inne? - o co chodzi w kompresji gpu.
-* czy mozna pokazac poziomy mipmap w Unity?
+* kompresja GPU (S3TC i podobne)
 * Rodzaje textur:
   * 2d,
   * cubemap,
@@ -124,13 +132,19 @@ Generalnie, see Cg docs, przede wszystkim:
 
   Textury 2D ale provided z movie http://docs.unity3d.com/Manual/class-MovieTexture.html , czasami mogą być useful. Po stronie shaderów to oczywiście zwykłe textury 2D, ale Unity załatwia za Was rozpakowanie i odtwarzanie filmiku do sekwencji klatek 2D.
 
-## Demo: własna woda, własny bump mapping + reflection. Gotowe demo z materiałami prepare.
+## Własna woda, własny bump mapping + reflection. Gotowe demo z materiałami prepare.
+
+Cubemapy. See http://docs.unity3d.com/ScriptReference/Camera.RenderToCubemap.html . Próbkowanie kierunkiem.
+
+Wyciąagnie normalek stąd: http://docs.unity3d.com/460/Documentation/Manual/SL-SurfaceShaderExamples.html
+
+Planowałem przygotować gotowe demo którym moglibyśmy się bawić, ale nie zdążyłem... Spróbujemy zrobić na bieżąco?:)
 
 ## Shadery multipass w Unity.
 
-## Shader fallback w Unity.
+Demo: Custom/Emboss
 
-## ? Antialiasing vs shadery, jest tam jakies precision?
+## Shader fallback w Unity.
 
 ## Textury proceduralne.
 
@@ -143,7 +157,7 @@ Generalnie, see Cg docs, przede wszystkim:
 ## Demo animujące shaderem vertexy:
 
 * zmieniaj vertex w zaleznosci od tekstury. proste górki wynikające z noise.
-* zmieniaj transformacje shaderem, np. przesun
+* zmieniaj transformacje shaderem, np. przesun.
 * mention disadvantages: ustawiaj recznie culling box
 
 ### Co pominąłem?
