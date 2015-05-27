@@ -6,22 +6,22 @@
 
 Oryginalny, najstarszy OpenGL fixed-function miał takie podejście do renderowania:
 
-  glLoadMatrix, glMultMatrix (and shortcuts like glLoadIdentity, glTranslate, glScale...)
+    glLoadMatrix, glMultMatrix (and shortcuts like glLoadIdentity, glTranslate, glScale...)
 
-    glBegin(...)
+      glBegin(...)
 
-      gl(... some vertex attrib, like glTexCoord, glMultiTexCoord, glMaterial...)
-      glVertex(...);
+	gl(... some vertex attrib, like glTexCoord, glMultiTexCoord, glMaterial...)
+	glVertex(...);
 
-      gl(... some vertex attrib, like glTexCoord, glMultiTexCoord, glMaterial...)
-      glVertex(...);
+	gl(... some vertex attrib, like glTexCoord, glMultiTexCoord, glMaterial...)
+	glVertex(...);
 
-      gl(... some vertex attrib, like glTexCoord, glMultiTexCoord, glMaterial...)
-      glVertex(...);
+	gl(... some vertex attrib, like glTexCoord, glMultiTexCoord, glMaterial...)
+	glVertex(...);
 
-      ....
+	....
 
-    glEnd();
+      glEnd();
 
 To API już nie istnieje w nowszych OpenGLach (jest deprecated w GL 3.0, wyrzucone w 3.1, a nawet na starszych GLach --- mocno niezalecane jako bardzo nieefektywne), jest zastąpione vertex arrays ładowanymi przez VBO. Ale podstawowa koncepcja pozostała: renderowanie to podawanie zbioru vertexów, każdy vertex ma jakieś atrybuty.
 
@@ -29,13 +29,13 @@ To API już nie istnieje w nowszych OpenGLach (jest deprecated w GL 3.0, wyrzuco
 
 Co można robić ciekawego per-vertex?
 
-  glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, constColor);
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_ARB);
-  glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_ALPHA_ARB, GL_MODULATE);
-  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA_ARB, GL_TEXTURE);
-  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA_ARB, GL_SRC_ALPHA);
-  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA_ARB, GL_CONSTANT_ARB);
-  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA_ARB, GL_SRC_ALPHA);
+    glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, constColor);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_ARB);
+    glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_ALPHA_ARB, GL_MODULATE);
+    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA_ARB, GL_TEXTURE);
+    glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA_ARB, GL_SRC_ALPHA);
+    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA_ARB, GL_CONSTANT_ARB);
+    glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA_ARB, GL_SRC_ALPHA);
 
 Co to znaczy? Że wynikowa alpha to "texure.alpha * constColor.alpha". Ewidentnie, chcemy wykonywać dowolne operacje arytmetyczne na kolorach, a to API jest ograniczeniem.
 
@@ -108,6 +108,7 @@ Generalnie, see Cg docs, przede wszystkim:
 ## Demo: proste nałożenie textury (Tex.shader), diffuse (SimpleDiffuse.shader).
 
 Zadanie:
+
 1. Zmień przykład diffuse w toon shading. Wygląda dziwnie, dlaczego?
 2. Zmień żeby obliczać oświetlenie per-fragment (cieniowanie Phonga, nie Gourauda), wtedy toon zadziała ładnie.
 3. Tex.shader zmień żeby mieszał 2 textury, wybierz jaśniejszą.
