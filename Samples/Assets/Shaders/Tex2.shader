@@ -1,4 +1,4 @@
-﻿Shader "Custom/Tex2" {
+﻿Shader "Tsg Samples/Two Textures" {
 	Properties {
         _MainTex ("Base (RGB)", 2D) = "white" {}
         _Tex2 ("Base (RGB)", 2D) = "white" {}

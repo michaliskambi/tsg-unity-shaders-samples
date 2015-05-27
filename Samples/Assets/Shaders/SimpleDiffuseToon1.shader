@@ -1,6 +1,6 @@
 ﻿// based on http://en.wikibooks.org/wiki/Cg_Programming/Unity/Diffuse_Reflection
 
-Shader "Cg per-vertex diffuse lighting" {
+Shader "Tsg Samples/Toon (Gouraud Shading)" {
    Properties {
       _Color ("Diffuse Material Color", Color) = (1,1,1,1) 
    }

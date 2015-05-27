@@ -1,4 +1,4 @@
-﻿Shader "Custom/Emboss" {
+﻿Shader "Tsg Samples/Outline" {
 	SubShader {
 		Pass {
 			ZWrite Off

@@ -1,6 +1,6 @@
 ﻿// based on http://en.wikibooks.org/wiki/Cg_Programming/Unity/Diffuse_Reflection
 
-Shader "Cg per-vertex diffuse lighting" {
+Shader "Tsg Samples/Diffuse Lighting (Gouraud Shading)" {
    Properties {
       _Color ("Diffuse Material Color", Color) = (1,1,1,1) 
    }
@@ -48,7 +48,7 @@ Shader "Cg per-vertex diffuse lighting" {
             float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
  
   			// vector dot is cos between vectors, for normalized vectors
-            float3 diffuseReflection = _LightColor0.rgb * _Color.rgb
+            float3 diffuseReflection = (_LightColor0.rgb * _Color.rgb)
                * max(0.0, dot(normalDirection, lightDirection));
 
             output.col = float4(diffuseReflection, 1.0);

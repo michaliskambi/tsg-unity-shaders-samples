@@ -1,4 +1,4 @@
-﻿Shader "Custom/SimplestVertexFragment" {
+﻿Shader "Tsg Samples/Simplest Vertex Fragment" {
 	SubShader {
 		Pass {
 			CGPROGRAM

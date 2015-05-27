@@ -1,4 +1,4 @@
-﻿Shader "Example/WorldRefl" {
+﻿Shader "Tsg Samples/Cube Reflection (Surface)" {
     Properties {
       _MainTex ("Texture", 2D) = "white" {}
       _Cube ("Cubemap", CUBE) = "" {}
