@@ -115,9 +115,15 @@ Zadanie:
 
 ## Surface shadery.
 
-Idea: piszemy funkcję "surf" która jest wkładana do środka shadera który zajmuje się obliczaniem oświetlenia. My zajmujemy się podaniem bazowego koloru (mieszamy textury, kolory...), Unity robi resztę. Dobre wtedy (i tylko wtedy) kiedy chcemy skorzystać ze standardowego oświetlenia Unity.
+Idea: piszemy funkcję "surf" która jest wkładana do środka shadera który zajmuje się obliczaniem oświetlenia. My zajmujemy się podaniem bazowego koloru (mieszamy textury, kolory...), ew. innych rzeczy (normal), Unity robi resztę. Dobre wtedy (i raczej tylko wtedy) kiedy chcemy skorzystać ze standardowego oświetlenia Unity.
+
+See http://docs.unity3d.com/Manual/SL-SurfaceShaders.html
 
 http://docs.unity3d.com/460/Documentation/Manual/SL-SurfaceShaderExamples.html
+
+Jest sporo specjalnych opcji dla surface shaderów żeby "wzbogacić" standardowy shader na różne sposoby.
+
+Demo: Shaders/SimplestSurface.shader, inne (exampes Unity są nice, my pobawimy się zaraz).
 
 ## Textury advanced
 
@@ -126,26 +132,61 @@ http://docs.unity3d.com/460/Documentation/Manual/SL-SurfaceShaderExamples.html
 * kompresja GPU (S3TC i podobne)
 * Rodzaje textur:
   * 2d,
-  * cubemap,
-  * 3D (volumetric textures), http://docs.unity3d.com/Manual/class-Texture3D.html .
+  * cubemap (więcej za chwilę),
+  * 3D (volumetric textures), http://docs.unity3d.com/Manual/class-Texture3D.html . TODO: demo (volumetric fog).
 
-  Są jeszcze render texture, chociaż dla shaderów to po prostu 2d.
+  Są jeszcze render texture, chociaż dla shaderów to po prostu 2d albo cubemapa. Dema będą. Image effects działają na RenderTexture.
 
-  Textury 2D ale provided z movie http://docs.unity3d.com/Manual/class-MovieTexture.html , czasami mogą być useful. Po stronie shaderów to oczywiście zwykłe textury 2D, ale Unity załatwia za Was rozpakowanie i odtwarzanie filmiku do sekwencji klatek 2D.
+  Textury 2D ale provided z movie http://docs.unity3d.com/Manual/class-MovieTexture.html , czasami mogą być useful. Po stronie shaderów to oczywiście zwykłe textury 2D, ale Unity załatwia za Was rozpakowanie i odtwarzanie filmiku do sekwencji klatek 2D. TODO: demo.
 
-## Własna woda, własny bump mapping + reflection. Gotowe demo z materiałami prepare.
+## Bardzo prosta woda "od podstaw": odbicia, modyfikowanie wektorów normalnych
 
-Cubemapy. See http://docs.unity3d.com/ScriptReference/Camera.RenderToCubemap.html . Próbkowanie kierunkiem.
+Cubemapy:
 
-Wyciąagnie normalek stąd: http://docs.unity3d.com/460/Documentation/Manual/SL-SurfaceShaderExamples.html
+* See http://docs.unity3d.com/ScriptReference/Camera.RenderToCubemap.html .
+* Funkcja: kierunek -> kolor.
+* Argument nie musi być znormalizowany, bo calcualated jak "weź wartość z max(abs(komponentem)), na podstawie tego wyznacz ściankę, użyj wektora /= max(abs(ten komponent))". De facto można używać cubemap jako look-up table do funkcji na kierunkach, np. do normalizacji.
+* Ostrożnie z assetem "CubeMap" w Unity. Są bardzo duże. Przekazywanie ich jako 6 * textur 2d i przepakowywanie at runtime w LH było sensowne. W U5 widzę że typ asset CubeMap jest nawet "legacy". Sam typ CubeMap dla shadera jest jak najbardziej alive.
+* Unity nie obsługuje kompresji GPU dla textur. Szkoda. Na GPU jest to jak najbardziej możliwe.
+* Render at realtime? Sure! RenderCubeMap.cs . Uwaga: cubemapa zjada dużo pamięci (GPU i, jeśli pozostawisz, CPU), pamiętaj niszczyć je kiedy należy (skybox to spory zjadacz pamięci w LH).
+* Dobre do odbić lub refrakcji obiektów odbijających wszystko naokoło. Czy dobre do wody? Czasami good enough, czasami too wasteful --- na wodzie nie widać większej części cubemapy (chociaż można to wykorzystać sztucznie przesuwając cubemapę).
 
-Planowałem przygotować gotowe demo którym moglibyśmy się bawić, ale nie zdążyłem... Spróbujemy zrobić na bieżąco?:)
+Wyciąganie normalek stąd: http://docs.unity3d.com/460/Documentation/Manual/SL-SurfaceShaderExamples.html
+
+Demo: Shaders/Water/
+
+TODO: lepsze demo, ciekawszy wzorek wysokości.
+
+Demo: razem z RenderCubeMap - użyj do wody środowiska robionego na bieżąco.
 
 ## Shadery multipass w Unity.
 
 Demo: Custom/Emboss
 
+Uwaga: surface shadery nie mogą być włożone w konkretny pass, """It must be placed inside SubShader block, not inside Pass. Surface shader will compile into multiple passes itself.""" - http://docs.unity3d.com/Manual/SL-SurfaceShaders.html .
+
 ## Shader fallback w Unity.
+
+## Standardowe shadery w Unity.
+
+Google "unity standard shaders", download - odp. dla wersji Unity.
+
+See np. UnityCG.cginc inside, some important stuff like
+
+    struct appdata_full {
+        float4 vertex : POSITION;
+        float4 tangent : TANGENT;
+        float3 normal : NORMAL;
+        float4 texcoord : TEXCOORD0;
+        float4 texcoord1 : TEXCOORD1;
+        fixed4 color : COLOR;
+    #if defined(SHADER_API_XBOX360)
+        half4 texcoord2 : TEXCOORD2;
+        half4 texcoord3 : TEXCOORD3;
+        half4 texcoord4 : TEXCOORD4;
+        half4 texcoord5 : TEXCOORD5;
+    #endif
+    };
 
 ## Textury proceduralne.
 
@@ -153,11 +194,18 @@ Demo: Custom/Emboss
 * zastosowanie smooth noise, z textury.
 * discard w shaderach - jakis otwor zrobiony proceduralnie.
 
+Demo: TextureFun.shader
+
 ## Image effects w Unity.
+
+Demo: Selective Grayscale.
 
 ## Demo animujące shaderem vertexy:
 
 * zmieniaj vertex w zaleznosci od tekstury. proste górki wynikające z noise.
+
+Demo: Woda z VertexAnim.
+
 * zmieniaj transformacje shaderem, np. przesun.
 * mention disadvantages: ustawiaj recznie culling box
 
@@ -165,11 +213,9 @@ Demo: Custom/Emboss
 
 #### Przynajmniej w OpenGLu, są i inne rodzaje shaderów
 
-* Geometry shaders (zmień prymitywy i vertexy)
-* Tesselation, evaluation shaders
+* Geometry shaders (zmień prymitywy i vertexy). Odpowiednik tego jest obsługiwany przez Unity, it seems: jest #pragma geometry, see http://docs.unity3d.com/Manual/SL-ShaderPrograms.html.
+* Tesselation, evaluation shaders. See https://www.opengl.org/wiki/Shader po początkowe linki o nowych shaderach w OpenGLu. *Być może* odpowiednikiem tego w Direct3D są hull/domain shadery w DX11 supported by Unity, see http://docs.unity3d.com/Manual/SL-ShaderPrograms.html.
 * Compute shaders. Akurat odpowiednik tego dla Direct3D jest obsługiwany przez Unity, it seems: http://docs.unity3d.com/Manual/ComputeShaders.html . Ale to nie do normalnych zastosowań, więc na chwilę zapomnijcie o tym:)
-
-See https://www.opengl.org/wiki/Shader po początkowe linki.
 
 ### Many cool stuff possible with shaders:
 
